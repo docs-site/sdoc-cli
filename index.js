@@ -10,6 +10,7 @@
  */
 const commander = require('commander');
 const createMdFile = require('./command/cmd_create_md');
+const processMdFileImg = require('./command/cmd_img');
 
 /** 
  * @brief 创建commander的Command实例 
@@ -27,6 +28,12 @@ program
 	.option('-d, --dir <dir>', '指定生成到哪个目录')
 	.description('create markdown file!')
 	.action(createMdFile.createMarkdownFile);
+
+program
+    .command("img")
+    .argument('<file>', 'markdown文件路径')
+    .description('处理markdown文件中的图片路径')
+    .action(processMdFileImg.processImagePaths);
 
 program.parse(); // 参数处理
 
