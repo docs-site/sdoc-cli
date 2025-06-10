@@ -18,12 +18,14 @@ const program = new commander.Command();
  */
 program
 	.command("n")
+	.argument('[fileName]', 'file name', 'demo')
 	.description('print hello world!')
-	.action(() => {
-		console.log(`✅ Hello, World!`);
+	.action((fileName) => {
+		console.log('✅ Hello, World! fileName:', fileName);
 	});
 
 program.parse(); // 参数处理
 
 // Try the following:
 //    node index.js n
+//    node index.js n fileName
