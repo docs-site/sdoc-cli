@@ -56,43 +56,68 @@ function generateContent(template, name) {
 }
 
 /**
+ * @brief 确认是否覆盖已存在的文件
+ * @param {string} filePath 要检查的文件路径
+ * @return {Promise<boolean>} 用户确认结果 (true表示确认覆盖)
+ */
+async function confirmOverwrite(filePath) {
+	return new Promise((resolve) => {
+		rl.question(`⚠️  文件已存在: ${filePath} 是否覆盖? (y/N) `, (answer) => {
+			resolve(answer.trim().toLowerCase() === 'y');
+		});
+	});
+}
+
+/**
  * @brief 创建markdown文件
  * @param {string} fileName 要创建的文件名（不带扩展名）
+ * @param {Object} options 命令行选项
+ * @param {string} [options.template=post] 模板名称
+ * @param {boolean} [options.force=false] 是否强制覆盖
  * @return {Promise<void>} 无返回值
+ * @throws {Error} 当文件创建失败时抛出异常
  */
-async function createMarkdownFile(fileName) {
-	const filePath = `${fileName}.md`;
-
+async function createMarkdownFile(fileName, options) {
 	// 1. 确定模板路径
-	const templatePath = path.join(__dirname, 'scaffolds', 'post.md');
-	// 2. 读取模板内容
-	const template = readTemplate(templatePath);
-
-	// 3. 生成文件内容
-	const content = generateContent(template, fileName);
-
-	// 检查文件是否已存在
-	if (fs.existsSync(filePath)) {
-		const answer = await new Promise(resolve => {
-			rl.question(`File ${filePath} already exists. Overwrite? (y/n) `, resolve);
-		});
-
-		// 用户取消操作
-		if (answer.toLowerCase() !== 'y') {
-			console.log('Operation cancelled');
-			rl.close();
-			return;
+	const templatePath = path.join(__dirname, 'scaffolds', `${options.template}.md`);
+	try {
+		const template = readTemplate(templatePath); 		 // 2. 读取模板内容
+		const content = generateContent(template, fileName); // 3. 生成文件内容
+		// 4. 确定输出目录和路径
+		const outputDir = options.dir ? path.join(process.cwd(), options.dir) : path.join(process.cwd(), 'test');
+		if (!fs.existsSync(outputDir)) {
+			fs.mkdirSync(outputDir, { recursive: true });
+			console.log(`📁 创建目录: ${outputDir}`);
 		}
+		const outputPath = path.join(outputDir, `${fileName}.md`);
+		try {
+			const fileExists = fs.existsSync(outputPath); // 5. 检查文件是否存在
+			// 6. 处理文件存在的情况
+			if (fileExists) {
+				if (options.force) {
+					console.log(`🔧 强制覆盖已存在的文件: ${outputPath}`);
+				} else {
+					const overwrite = await confirmOverwrite(outputPath);
+					if (!overwrite) {
+						console.log('🚫 操作已取消');
+						return;
+					}
+				}
+			}
+			// 7. 创建/覆盖文件
+			fs.writeFileSync(outputPath, content, 'utf8');
+			console.log(`✅ 文档已生成: ${outputPath}`);
+			console.log(`📋 使用模板: ${path.relative(process.cwd(), templatePath)}`);
+			console.log(`⏰ 当前时间: ${getTime.getCurrentDateTime()}`);
+		} catch (err) {
+			throw new Error(`文件创建失败: ${outputPath}\n${err.message}`);
+		}
+	} catch (err) {
+		console.error(`❌ ${err.message}`);
+		process.exit(1);
+	} finally {
+		rl.close();
 	}
-
-	// 创建/覆盖文件
-	fs.writeFileSync(filePath, content, 'utf8');
-	console.log(`Created ${filePath}`);
-	rl.close();
-
-	console.log(`✅ 文档已生成: ${filePath}`);
-	console.log(`📋 使用模板: ${path.relative(process.cwd(), templatePath)}`);
-	console.log(`⏰ 创建时间: ${getTime.getCurrentDateTime()}`);
 }
 
 /** 
@@ -101,6 +126,9 @@ async function createMarkdownFile(fileName) {
 program
 	.command("n")
 	.argument('[fileName]', 'file name', 'demo')
+	.option('-t, --template <name>', '指定模板名称 (默认为post)', 'post')
+	.option('-f, --force', '强制覆盖已存在的文件')
+	.option('-d, --dir <dir>', '指定生成到哪个目录')
 	.description('create markdown file!')
 	.action(createMarkdownFile);
 
