@@ -1,6 +1,6 @@
 {
   "name": "sdoc-cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "index.js",
   "bin": {
     "sdoc": "./index.js"
@@ -12,7 +12,11 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "苏木的文档小工具",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/docs-site/sdoc-cli.git"
+  },
   "dependencies": {
     "commander": "^14.0.0"
   }
