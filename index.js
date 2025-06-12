@@ -9,6 +9,7 @@
  * ======================================================
  */
 const commander = require('commander');
+const pkg = require('./package.json');
 const createMdFile = require('./command/cmd_create_md');
 const processMdFileImg = require('./command/cmd_img');
 const { main: treeMain } = require('./command/cmd_tree');
@@ -18,6 +19,12 @@ const gitSubmodule = require('./command/cmd_git_submodule');
  * @brief 创建commander的Command实例 
  */
 const program = new commander.Command();
+
+/** 
+ * @brief 设置程序的名称、版本和描述 
+ */
+program.version(`${pkg.name}: ${pkg.version}`, '-v, --version', '显示版本信息');
+
 
 /** 
  * @brief 添加"n"子命令及其参数和动作 
