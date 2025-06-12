@@ -12,6 +12,7 @@ const commander = require('commander');
 const createMdFile = require('./command/cmd_create_md');
 const processMdFileImg = require('./command/cmd_img');
 const { main: treeMain } = require('./command/cmd_tree');
+const gitSubmodule = require('./command/cmd_git_submodule');
 
 /** 
  * @brief 创建commander的Command实例 
@@ -41,6 +42,11 @@ program
     .description('打印当前目录的树状结构')
     .option('-L, --depth <n>', '设置显示的目录深度')
     .action(treeMain);
+
+program
+    .command(gitSubmodule.command)
+    .description(gitSubmodule.description)
+    .action(gitSubmodule.handler);
 
 program.parse(); // 参数处理
 
