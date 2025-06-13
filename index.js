@@ -20,10 +20,26 @@ const gitSubmodule = require('./command/cmd_git_submodule');
  */
 const program = new commander.Command();
 
+/**
+ * @brief 获取版本和依赖信息
+ * @returns {string} 格式化的版本和依赖信息
+ */
+function getVersionInfo() {
+	return `${pkg.name}: ${pkg.version}` +
+		`\n\nDependencies:` +
+		`\n${Object.entries(pkg.dependencies || {})
+			.map(([name, version]) => `  ${name}: ${version}`)
+			.join('\n') || '  No dependencies found'}`;
+}
+
 /** 
  * @brief 设置程序的名称、版本和描述 
  */
-program.version(`${pkg.name}: ${pkg.version}`, '-v, --version', '显示版本信息');
+program.version(
+	getVersionInfo(),
+	'-v, --version',
+	'显示版本信息'
+);
 
 
 /** 
@@ -39,21 +55,21 @@ program
 	.action(createMdFile.createMarkdownFile);
 
 program
-    .command("img")
-    .argument('<file>', 'markdown文件路径')
-    .description('处理markdown文件中的图片路径')
-    .action(processMdFileImg.processImagePaths);
+	.command("img")
+	.argument('<file>', 'markdown文件路径')
+	.description('处理markdown文件中的图片路径')
+	.action(processMdFileImg.processImagePaths);
 
 program
-    .command("tree")
-    .description('打印当前目录的树状结构')
-    .option('-L, --depth <n>', '设置显示的目录深度')
-    .action(treeMain);
+	.command("tree")
+	.description('打印当前目录的树状结构')
+	.option('-L, --depth <n>', '设置显示的目录深度')
+	.action(treeMain);
 
 program
-    .command(gitSubmodule.command)
-    .description(gitSubmodule.description)
-    .action(gitSubmodule.handler);
+	.command(gitSubmodule.command)
+	.description(gitSubmodule.description)
+	.action(gitSubmodule.handler);
 
 program.parse(); // 参数处理
 
