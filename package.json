@@ -1,6 +1,6 @@
 {
-  "name": "sdoc-cli",
-  "version": "1.0.5",
+  "name": "@docs-site/sdoc-cli",
+  "version": "1.0.6",
   "main": "index.js",
   "bin": {
     "sdoc": "./index.js"
