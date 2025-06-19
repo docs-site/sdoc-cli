@@ -48,7 +48,7 @@ jobs:
 
       # 步骤 6: 发布到 npm
       - name: Publish to npm
-        run: echo "npm publish --access public"  # 发布公开包
+        run: npm publish --access public  # 发布公开包
         env:
           NODE_AUTH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN_NPM }}  # 使用存储的 npm token
 
