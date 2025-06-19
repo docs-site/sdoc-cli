@@ -1,6 +1,6 @@
 {
   "name": "@docs-site/sdoc-cli",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "main": "index.js",
   "bin": {
     "sdoc": "./index.js"
@@ -12,7 +12,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "苏木的文档小工具",
+  "description": "sumu's document processing cli tool. This is a JavaScript project.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/docs-site/sdoc-cli.git"

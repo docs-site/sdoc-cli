@@ -1,2 +1,3 @@
-command
 examples
+.github
+node_modules
