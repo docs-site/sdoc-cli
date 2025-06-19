@@ -25,6 +25,12 @@ jobs:
         with:
           fetch-depth: 0  # 获取完整提交历史（需要访问历史标签）
           persist-credentials: true  # 保留凭证用于后续推送
+      
+      - name: 打印相关路径
+        run: | # | 为 yaml 的特定符号，其下可以使用多行文字。
+          echo "当前路径为 $(pwd)"
+          echo "工作路径为 ${{ github.workspace }}"
+          echo "HOME路径为 $HOME"
 
       # 步骤 2: 设置 Node.js 环境
       - name: Setup Node.js
